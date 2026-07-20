@@ -1,1 +1,1 @@
-"""Analyzers for PDIE."""
+\"\"\"Analyzers for PDIE.\"\"\"\n\nfrom pdie.analyzers.workbook_fingerprinter import WorkbookFingerprinter\n\n__all__ = [\"WorkbookFingerprinter\"]\n"
