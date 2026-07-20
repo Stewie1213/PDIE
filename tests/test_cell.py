@@ -16,9 +16,7 @@ class TestCell:
 
     def test_cell_is_formula(self) -> None:
         """Test formula detection."""
-        cell_with_formula = Cell(
-            address="A1", row=1, column=1, formula="=B1+B2"
-        )
+        cell_with_formula = Cell(address="A1", row=1, column=1, formula="=B1+B2")
         cell_without_formula = Cell(address="A2", row=2, column=1, value=42)
 
         assert cell_with_formula.is_formula()
@@ -26,15 +24,9 @@ class TestCell:
 
     def test_cell_is_editable(self) -> None:
         """Test editable detection."""
-        editable_cell = Cell(
-            address="A1", row=1, column=1, editable_score=0.8, locked=False
-        )
-        locked_cell = Cell(
-            address="A2", row=2, column=1, editable_score=0.8, locked=True
-        )
-        uneditable_cell = Cell(
-            address="A3", row=3, column=1, editable_score=0.3, locked=False
-        )
+        editable_cell = Cell(address="A1", row=1, column=1, editable_score=0.8, locked=False)
+        locked_cell = Cell(address="A2", row=2, column=1, editable_score=0.8, locked=True)
+        uneditable_cell = Cell(address="A3", row=3, column=1, editable_score=0.3, locked=False)
 
         assert editable_cell.is_editable()
         assert not locked_cell.is_editable()

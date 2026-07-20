@@ -19,9 +19,7 @@ engine = Engine()
 
 @app.command()
 def analyze(
-    workbook_path: Path = typer.Argument(
-        ..., help="Path to the workbook to analyze"
-    ),
+    workbook_path: Path = typer.Argument(..., help="Path to the workbook to analyze"),
 ) -> None:
     """Analyze a workbook and generate metadata and reports.
 
@@ -31,9 +29,7 @@ def analyze(
     try:
         workbook_path = Path(workbook_path).resolve()
         if not workbook_path.exists():
-            console.print(
-                f"[red]Error:[/red] File not found: {workbook_path}"
-            )
+            console.print(f"[red]Error:[/red] File not found: {workbook_path}")
             sys.exit(1)
 
         console.print(
@@ -61,12 +57,8 @@ def analyze(
 
 @app.command()
 def compare(
-    old_workbook: Path = typer.Argument(
-        ..., help="Path to the original workbook"
-    ),
-    new_workbook: Path = typer.Argument(
-        ..., help="Path to the new workbook"
-    ),
+    old_workbook: Path = typer.Argument(..., help="Path to the original workbook"),
+    new_workbook: Path = typer.Argument(..., help="Path to the new workbook"),
 ) -> None:
     """Compare two workbook versions and detect changes.
 
@@ -84,9 +76,7 @@ def compare(
             console.print(f"[red]Error:[/red] File not found: {new_path}")
             sys.exit(1)
 
-        console.print(
-            f"[cyan]Comparing:[/cyan] {old_path.name} -> {new_path.name}"
-        )
+        console.print(f"[cyan]Comparing:[/cyan] {old_path.name} -> {new_path.name}")
         result = engine.compare(old_path, new_path)
 
         console.print(f"[green]✓[/green] Comparison complete: {result}")
@@ -98,9 +88,7 @@ def compare(
 
 @app.command()
 def package(
-    workbook_path: Path = typer.Argument(
-        ..., help="Path to the workbook to package"
-    ),
+    workbook_path: Path = typer.Argument(..., help="Path to the workbook to package"),
 ) -> None:
     """Package a workbook as a Smart Template.
 
@@ -110,9 +98,7 @@ def package(
     try:
         workbook_path = Path(workbook_path).resolve()
         if not workbook_path.exists():
-            console.print(
-                f"[red]Error:[/red] File not found: {workbook_path}"
-            )
+            console.print(f"[red]Error:[/red] File not found: {workbook_path}")
             sys.exit(1)
 
         console.print(
@@ -128,12 +114,8 @@ def package(
 
 @app.command()
 def fill(
-    template_path: Path = typer.Argument(
-        ..., help="Path to the template file"
-    ),
-    data_path: Path = typer.Argument(
-        ..., help="Path to the JSON data file"
-    ),
+    template_path: Path = typer.Argument(..., help="Path to the template file"),
+    data_path: Path = typer.Argument(..., help="Path to the JSON data file"),
 ) -> None:
     """Fill a Smart Template with data from a JSON file.
 
@@ -145,19 +127,13 @@ def fill(
         data_path = Path(data_path).resolve()
 
         if not template_path.exists():
-            console.print(
-                f"[red]Error:[/red] Template not found: {template_path}"
-            )
+            console.print(f"[red]Error:[/red] Template not found: {template_path}")
             sys.exit(1)
         if not data_path.exists():
-            console.print(
-                f"[red]Error:[/red] Data file not found: {data_path}"
-            )
+            console.print(f"[red]Error:[/red] Data file not found: {data_path}")
             sys.exit(1)
 
-        console.print(
-            f"[cyan]Filling:[/cyan] {template_path.name} with {data_path.name}"
-        )
+        console.print(f"[cyan]Filling:[/cyan] {template_path.name} with {data_path.name}")
         result = engine.fill(template_path, data_path)
         console.print(f"[green]✓[/green] Template filled: {result}")
 
@@ -168,9 +144,7 @@ def fill(
 
 @app.command()
 def validate(
-    template_path: Path = typer.Argument(
-        ..., help="Path to the template to validate"
-    ),
+    template_path: Path = typer.Argument(..., help="Path to the template to validate"),
 ) -> None:
     """Validate a Smart Template.
 
@@ -180,9 +154,7 @@ def validate(
     try:
         template_path = Path(template_path).resolve()
         if not template_path.exists():
-            console.print(
-                f"[red]Error:[/red] Template not found: {template_path}"
-            )
+            console.print(f"[red]Error:[/red] Template not found: {template_path}")
             sys.exit(1)
 
         console.print(
