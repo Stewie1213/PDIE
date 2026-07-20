@@ -1,1 +1,96 @@
-\"\"\"Main engine coordinator for PDIE.\"\"\"\n\nfrom pathlib import Path\n\nfrom openpyxl import load_workbook\n\nfrom pdie.analyzers.workbook_fingerprinter import WorkbookFingerprinter\nfrom pdie.readers.excel_reader import ExcelReader\nfrom pdie.core.workbook import Workbook\n\n\nclass Engine:\n    \"\"\"Main coordinator for PDIE operations.\"\"\"\n\n    def __init__(self) -> None:\n        \"\"\"Initialize the engine.\"\"\"\n        self.reader = ExcelReader()\n        self.fingerprinter = WorkbookFingerprinter()\n\n    def analyze(self, workbook_path: Path) -> Workbook:\n        \"\"\"Analyze a workbook.\n\n        Args:\n            workbook_path: Path to the workbook to analyze.\n\n        Returns:\n            Workbook: The analyzed workbook.\n        \"\"\"\n        workbook = self.reader.read(workbook_path)\n\n        # Generate workbook fingerprint\n        workbook.fingerprint = self.fingerprinter.fingerprint_workbook(\n            workbook\n        )\n\n        # Generate worksheet fingerprints\n        openpyxl_wb = load_workbook(workbook_path)\n        for worksheet in workbook.worksheets.values():\n            if worksheet.name in openpyxl_wb.sheetnames:\n                openpyxl_ws = openpyxl_wb[worksheet.name]\n                worksheet.fingerprint = (\n                    self.fingerprinter.fingerprint_worksheet(\n                        worksheet, openpyxl_ws\n                    )\n                )\n\n        return workbook\n\n    def compare(self, old_path: Path, new_path: Path) -> dict:\n        \"\"\"Compare two workbook versions.\n\n        Args:\n            old_path: Path to the original workbook.\n            new_path: Path to the new workbook.\n\n        Returns:\n            dict: Comparison results.\n        \"\"\"\n        old_workbook = self.reader.read(old_path)\n        new_workbook = self.reader.read(new_path)\n        # TODO: Implement difference engine\n        return {\"old\": old_workbook.name, \"new\": new_workbook.name}\n\n    def package(self, workbook_path: Path) -> str:\n        \"\"\"Package a workbook as a Smart Template.\n\n        Args:\n            workbook_path: Path to the workbook to package.\n\n        Returns:\n            str: Path to the created template.\n        \"\"\"\n        workbook = self.reader.read(workbook_path)\n        # TODO: Implement template packaging\n        return f\"{workbook.name}.template\"\n\n    def fill(self, template_path: Path, data_path: Path) -> str:\n        \"\"\"Fill a template with data.\n\n        Args:\n            template_path: Path to the template.\n            data_path: Path to the JSON data.\n\n        Returns:\n            str: Path to the filled workbook.\n        \"\"\"\n        # TODO: Implement template filling\n        return \"filled_workbook.xlsm\"\n\n    def validate(self, template_path: Path) -> dict:\n        \"\"\"Validate a template.\n\n        Args:\n            template_path: Path to the template.\n\n        Returns:\n            dict: Validation results.\n        \"\"\"\n        # TODO: Implement validation\n        return {\"valid\": True, \"errors\": []}\n"
+"""Main engine coordinator for PDIE."""
+
+from pathlib import Path
+
+from openpyxl import load_workbook
+
+from pdie.analyzers.workbook_fingerprinter import WorkbookFingerprinter
+from pdie.core.workbook import Workbook
+from pdie.readers.excel_reader import ExcelReader
+
+
+class Engine:
+    """Main coordinator for PDIE operations."""
+
+    def __init__(self) -> None:
+        """Initialize the engine."""
+        self.reader = ExcelReader()
+        self.fingerprinter = WorkbookFingerprinter()
+
+    def analyze(self, workbook_path: Path) -> Workbook:
+        """Analyze a workbook.
+
+        Args:
+            workbook_path: Path to the workbook to analyze.
+
+        Returns:
+            Workbook: The analyzed workbook.
+        """
+        workbook = self.reader.read(workbook_path)
+
+        # Generate workbook fingerprint
+        workbook.fingerprint = self.fingerprinter.fingerprint_workbook(workbook)
+
+        # Generate worksheet fingerprints
+        openpyxl_wb = load_workbook(workbook_path)
+        for worksheet in workbook.worksheets.values():
+            if worksheet.name in openpyxl_wb.sheetnames:
+                openpyxl_ws = openpyxl_wb[worksheet.name]
+                worksheet.fingerprint = self.fingerprinter.fingerprint_worksheet(
+                    worksheet, openpyxl_ws
+                )
+
+        return workbook
+
+    def compare(self, old_path: Path, new_path: Path) -> dict:
+        """Compare two workbook versions.
+
+        Args:
+            old_path: Path to the original workbook.
+            new_path: Path to the new workbook.
+
+        Returns:
+            dict: Comparison results.
+        """
+        old_workbook = self.reader.read(old_path)
+        new_workbook = self.reader.read(new_path)
+        # TODO: Implement difference engine
+        return {"old": old_workbook.name, "new": new_workbook.name}
+
+    def package(self, workbook_path: Path) -> str:
+        """Package a workbook as a Smart Template.
+
+        Args:
+            workbook_path: Path to the workbook to package.
+
+        Returns:
+            str: Path to the created template.
+        """
+        workbook = self.reader.read(workbook_path)
+        # TODO: Implement template packaging
+        return f"{workbook.name}.template"
+
+    def fill(self, template_path: Path, data_path: Path) -> str:
+        """Fill a template with data.
+
+        Args:
+            template_path: Path to the template.
+            data_path: Path to the JSON data.
+
+        Returns:
+            str: Path to the filled workbook.
+        """
+        # TODO: Implement template filling
+        return "filled_workbook.xlsm"
+
+    def validate(self, template_path: Path) -> dict:
+        """Validate a template.
+
+        Args:
+            template_path: Path to the template.
+
+        Returns:
+            dict: Validation results.
+        """
+        # TODO: Implement validation
+        return {"valid": True, "errors": []}

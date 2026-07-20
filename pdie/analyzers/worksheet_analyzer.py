@@ -1,1 +1,125 @@
-\"\"\"Analyzer for worksheets.\"\"\"\n\nfrom pdie.core.worksheet import Worksheet\nfrom pdie.analyzers.cell_analyzer import CellAnalyzer\n\n\nclass WorksheetAnalyzer:\n    \"\"\"Analyzes worksheets and their cells.\"\"\"\n\n    @staticmethod\n    def analyze_worksheet(worksheet: Worksheet) -> None:\n        \"\"\"Analyze all cells in a worksheet.\n\n        Args:\n            worksheet: The worksheet to analyze.\n        \"\"\"\n        # Analyze each cell\n        for cell in worksheet.cells.values():\n            CellAnalyzer.analyze_cell(cell, worksheet)\n\n    @staticmethod\n    def detect_header_row(worksheet: Worksheet) -> int:\n        \"\"\"Detect which row contains headers.\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            int: The row number (1-based) that appears to be headers, or 0 if none found.\n        \"\"\"\n        # Check first 5 rows for header patterns\n        for row_num in range(1, min(6, worksheet.cell_count() + 1)):\n            row_cells = worksheet.get_row(row_num)\n            if not row_cells:\n                continue\n\n            # Count how many cells look like headers\n            header_count = 0\n            for cell in row_cells:\n                if cell.value and isinstance(cell.value, str):\n                    value_str = str(cell.value).strip()\n                    # Headers are typically short, non-numeric text\n                    if 1 < len(value_str) < 50:\n                        if not value_str.isdigit():\n                            header_count += 1\n\n            # If most cells in row look like headers, it's the header row\n            if header_count > 0 and header_count >= len(row_cells) * 0.7:\n                return row_num\n\n        return 0\n\n    @staticmethod\n    def detect_data_region(\n        worksheet: Worksheet,\n    ) -> tuple[int, int, int, int]:\n        \"\"\"Detect the data region (min_row, min_col, max_row, max_col).\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            tuple: (min_row, min_col, max_row, max_col) or (0, 0, 0, 0) if empty.\n        \"\"\"\n        if not worksheet.cells:\n            return (0, 0, 0, 0)\n\n        rows = [cell.row for cell in worksheet.cells.values()]\n        cols = [cell.column for cell in worksheet.cells.values()]\n\n        return (min(rows), min(cols), max(rows), max(cols))\n\n    @staticmethod\n    def count_by_field_type(worksheet: Worksheet) -> dict[str, int]:\n        \"\"\"Count cells by field type.\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            dict: Field type counts.\n        \"\"\"\n        counts: dict[str, int] = {}\n\n        for cell in worksheet.cells.values():\n            field_type = cell.metadata.get(\"field_type\", \"unknown\")\n            counts[field_type] = counts.get(field_type, 0) + 1\n\n        return counts\n\n    @staticmethod\n    def get_editable_cells(worksheet: Worksheet) -> list:\n        \"\"\"Get all editable cells in a worksheet.\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            list: List of editable cells.\n        \"\"\"\n        return [cell for cell in worksheet.cells.values() if cell.is_editable()]\n\n    @staticmethod\n    def get_formula_cells(worksheet: Worksheet) -> list:\n        \"\"\"Get all formula cells in a worksheet.\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            list: List of formula cells.\n        \"\"\"\n        return [cell for cell in worksheet.cells.values() if cell.is_formula()]\n\n    @staticmethod\n    def get_validation_cells(worksheet: Worksheet) -> list:\n        \"\"\"Get all cells with data validation in a worksheet.\n\n        Args:\n            worksheet: The worksheet to analyze.\n\n        Returns:\n            list: List of cells with validation.\n        \"\"\"\n        return [cell for cell in worksheet.cells.values() if cell.has_validation()]\n"
+"""Analyzer for worksheets."""
+
+from pdie.analyzers.cell_analyzer import CellAnalyzer
+from pdie.core.worksheet import Worksheet
+
+
+class WorksheetAnalyzer:
+    """Analyzes worksheets and their cells."""
+
+    @staticmethod
+    def analyze_worksheet(worksheet: Worksheet) -> None:
+        """Analyze all cells in a worksheet.
+
+        Args:
+            worksheet: The worksheet to analyze.
+        """
+        # Analyze each cell
+        for cell in worksheet.cells.values():
+            CellAnalyzer.analyze_cell(cell, worksheet)
+
+    @staticmethod
+    def detect_header_row(worksheet: Worksheet) -> int:
+        """Detect which row contains headers.
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            int: The row number (1-based) that appears to be headers, or 0 if none found.
+        """
+        # Check first 5 rows for header patterns
+        for row_num in range(1, min(6, worksheet.cell_count() + 1)):
+            row_cells = worksheet.get_row(row_num)
+            if not row_cells:
+                continue
+
+            # Count how many cells look like headers
+            header_count = 0
+            for cell in row_cells:
+                if cell.value and isinstance(cell.value, str):
+                    value_str = str(cell.value).strip()
+                    # Headers are typically short, non-numeric text
+                    if 1 < len(value_str) < 50:
+                        if not value_str.isdigit():
+                            header_count += 1
+
+            # If most cells in row look like headers, it's the header row
+            if header_count > 0 and header_count >= len(row_cells) * 0.7:
+                return row_num
+
+        return 0
+
+    @staticmethod
+    def detect_data_region(
+        worksheet: Worksheet,
+    ) -> tuple[int, int, int, int]:
+        """Detect the data region (min_row, min_col, max_row, max_col).
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            tuple: (min_row, min_col, max_row, max_col) or (0, 0, 0, 0) if empty.
+        """
+        if not worksheet.cells:
+            return (0, 0, 0, 0)
+
+        rows = [cell.row for cell in worksheet.cells.values()]
+        cols = [cell.column for cell in worksheet.cells.values()]
+
+        return (min(rows), min(cols), max(rows), max(cols))
+
+    @staticmethod
+    def count_by_field_type(worksheet: Worksheet) -> dict[str, int]:
+        """Count cells by field type.
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            dict: Field type counts.
+        """
+        counts: dict[str, int] = {}
+
+        for cell in worksheet.cells.values():
+            field_type = cell.metadata.get("field_type", "unknown")
+            counts[field_type] = counts.get(field_type, 0) + 1
+
+        return counts
+
+    @staticmethod
+    def get_editable_cells(worksheet: Worksheet) -> list:
+        """Get all editable cells in a worksheet.
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            list: List of editable cells.
+        """
+        return [cell for cell in worksheet.cells.values() if cell.is_editable()]
+
+    @staticmethod
+    def get_formula_cells(worksheet: Worksheet) -> list:
+        """Get all formula cells in a worksheet.
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            list: List of formula cells.
+        """
+        return [cell for cell in worksheet.cells.values() if cell.is_formula()]
+
+    @staticmethod
+    def get_validation_cells(worksheet: Worksheet) -> list:
+        """Get all cells with data validation in a worksheet.
+
+        Args:
+            worksheet: The worksheet to analyze.
+
+        Returns:
+            list: List of cells with validation.
+        """
+        return [cell for cell in worksheet.cells.values() if cell.has_validation()]

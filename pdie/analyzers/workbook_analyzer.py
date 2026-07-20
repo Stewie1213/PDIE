@@ -1,1 +1,77 @@
-\"\"\"Analyzer for workbooks.\"\"\"\n\nfrom pdie.core.workbook import Workbook\nfrom pdie.analyzers.worksheet_analyzer import WorksheetAnalyzer\n\n\nclass WorkbookAnalyzer:\n    \"\"\"Analyzes workbooks and coordinates worksheet analysis.\"\"\"\n\n    @staticmethod\n    def analyze_workbook(workbook: Workbook) -> None:\n        \"\"\"Analyze all worksheets in a workbook.\n\n        Args:\n            workbook: The workbook to analyze.\n        \"\"\"\n        for worksheet in workbook.worksheets.values():\n            WorksheetAnalyzer.analyze_worksheet(worksheet)\n\n    @staticmethod\n    def get_summary(workbook: Workbook) -> dict:\n        \"\"\"Get a summary of the workbook analysis.\n\n        Args:\n            workbook: The workbook to summarize.\n\n        Returns:\n            dict: Analysis summary.\n        \"\"\"\n        summary = {\n            \"workbook_name\": workbook.name,\n            \"worksheet_count\": workbook.worksheet_count(),\n            \"total_cells\": workbook.total_cells(),\n            \"total_formulas\": workbook.total_formulas(),\n            \"total_editable\": workbook.total_editable_cells(),\n            \"worksheets\": {},\n        }\n\n        for ws_name, worksheet in workbook.worksheets.items():\n            ws_summary = {\n                \"name\": worksheet.name,\n                \"index\": worksheet.index,\n                \"hidden\": worksheet.hidden,\n                \"protected\": worksheet.protected,\n                \"cell_count\": worksheet.cell_count(),\n                \"formula_count\": worksheet.formula_count(),\n                \"editable_count\": worksheet.editable_count(),\n                \"field_type_counts\": WorksheetAnalyzer.count_by_field_type(\n                    worksheet\n                ),\n                \"data_region\": WorksheetAnalyzer.detect_data_region(worksheet),\n                \"header_row\": WorksheetAnalyzer.detect_header_row(worksheet),\n            }\n\n            # Add fingerprint info if available\n            if worksheet.fingerprint:\n                ws_summary[\"fingerprint\"] = {\n                    \"rows\": worksheet.fingerprint.rows,\n                    \"columns\": worksheet.fingerprint.columns,\n                    \"merged_cells\": worksheet.fingerprint.merged_cells,\n                    \"formula_cells\": worksheet.fingerprint.formula_cells,\n                }\n\n            summary[\"worksheets\"][ws_name] = ws_summary\n\n        # Add fingerprint info if available\n        if workbook.fingerprint:\n            summary[\"fingerprint\"] = {\n                \"file_type\": workbook.fingerprint.file_type,\n                \"contains_macros\": workbook.fingerprint.contains_macros,\n                \"contains_images\": workbook.fingerprint.contains_images,\n                \"contains_tables\": workbook.fingerprint.contains_tables,\n                \"dropdown_count\": workbook.fingerprint.dropdown_count,\n                \"merged_range_count\": workbook.fingerprint.merged_range_count,\n                \"named_range_count\": workbook.fingerprint.named_range_count,\n                \"protected\": workbook.fingerprint.protected,\n            }\n\n        return summary\n"
+"""Analyzer for workbooks."""
+
+from pdie.analyzers.worksheet_analyzer import WorksheetAnalyzer
+from pdie.core.workbook import Workbook
+
+
+class WorkbookAnalyzer:
+    """Analyzes workbooks and coordinates worksheet analysis."""
+
+    @staticmethod
+    def analyze_workbook(workbook: Workbook) -> None:
+        """Analyze all worksheets in a workbook.
+
+        Args:
+            workbook: The workbook to analyze.
+        """
+        for worksheet in workbook.worksheets.values():
+            WorksheetAnalyzer.analyze_worksheet(worksheet)
+
+    @staticmethod
+    def get_summary(workbook: Workbook) -> dict:
+        """Get a summary of the workbook analysis.
+
+        Args:
+            workbook: The workbook to summarize.
+
+        Returns:
+            dict: Analysis summary.
+        """
+        summary = {
+            "workbook_name": workbook.name,
+            "worksheet_count": workbook.worksheet_count(),
+            "total_cells": workbook.total_cells(),
+            "total_formulas": workbook.total_formulas(),
+            "total_editable": workbook.total_editable_cells(),
+            "worksheets": {},
+        }
+
+        for ws_name, worksheet in workbook.worksheets.items():
+            ws_summary = {
+                "name": worksheet.name,
+                "index": worksheet.index,
+                "hidden": worksheet.hidden,
+                "protected": worksheet.protected,
+                "cell_count": worksheet.cell_count(),
+                "formula_count": worksheet.formula_count(),
+                "editable_count": worksheet.editable_count(),
+                "field_type_counts": WorksheetAnalyzer.count_by_field_type(worksheet),
+                "data_region": WorksheetAnalyzer.detect_data_region(worksheet),
+                "header_row": WorksheetAnalyzer.detect_header_row(worksheet),
+            }
+
+            # Add fingerprint info if available
+            if worksheet.fingerprint:
+                ws_summary["fingerprint"] = {
+                    "rows": worksheet.fingerprint.rows,
+                    "columns": worksheet.fingerprint.columns,
+                    "merged_cells": worksheet.fingerprint.merged_cells,
+                    "formula_cells": worksheet.fingerprint.formula_cells,
+                }
+
+            summary["worksheets"][ws_name] = ws_summary
+
+        # Add fingerprint info if available
+        if workbook.fingerprint:
+            summary["fingerprint"] = {
+                "file_type": workbook.fingerprint.file_type,
+                "contains_macros": workbook.fingerprint.contains_macros,
+                "contains_images": workbook.fingerprint.contains_images,
+                "contains_tables": workbook.fingerprint.contains_tables,
+                "dropdown_count": workbook.fingerprint.dropdown_count,
+                "merged_range_count": workbook.fingerprint.merged_range_count,
+                "named_range_count": workbook.fingerprint.named_range_count,
+                "protected": workbook.fingerprint.protected,
+            }
+
+        return summary

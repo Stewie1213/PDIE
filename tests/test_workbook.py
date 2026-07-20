@@ -1,8 +1,8 @@
 """Tests for the Workbook model."""
 
+from pdie.core.cell import Cell
 from pdie.core.workbook import Workbook
 from pdie.core.worksheet import Worksheet
-from pdie.core.cell import Cell
 
 
 class TestWorkbook:
