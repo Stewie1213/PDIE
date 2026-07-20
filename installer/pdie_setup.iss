@@ -2,6 +2,12 @@
 #define MyAppVersion "0.1.0"
 #define MyAppPublisher "ProAssist"
 #define MyAppExeName "pdie.exe"
+#define ProjectRoot AddBackslash(SourcePath) + ".."
+#define BuiltExe ProjectRoot + "\\dist\\pdie\\" + MyAppExeName
+
+#if !FileExists(BuiltExe)
+  #error "Missing dist\\pdie\\pdie.exe. From C:\\Users\\BrianS\\PDIE-main, run installer\\build_setup.bat first. Do not compile this .iss before building pdie.exe."
+#endif
 
 [Setup]
 AppId={{B8B5C2A3-0D02-40D5-A7A9-8FD7B4D5D773}
@@ -11,6 +17,7 @@ AppPublisher={#MyAppPublisher}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+OutputDir={#ProjectRoot}\dist\installer
 OutputDir=..\dist\installer
 OutputBaseFilename=setup
 Compression=lzma
@@ -21,6 +28,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 ChangesEnvironment=yes
 
 [Files]
+Source: "{#BuiltExe}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\dist\pdie\pdie.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
