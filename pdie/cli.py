@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -19,9 +20,7 @@ engine = Engine()
 
 @app.command()
 def analyze(
-    workbook_path: Path = typer.Argument(
-        ..., help="Path to the workbook to analyze"
-    ),
+    workbook_path: Annotated[Path, typer.Argument(help="Path to the workbook to analyze")],
 ) -> None:
     """Analyze a workbook and generate metadata and reports.
 
@@ -61,12 +60,8 @@ def analyze(
 
 @app.command()
 def compare(
-    old_workbook: Path = typer.Argument(
-        ..., help="Path to the original workbook"
-    ),
-    new_workbook: Path = typer.Argument(
-        ..., help="Path to the new workbook"
-    ),
+    old_workbook: Annotated[Path, typer.Argument(help="Path to the original workbook")],
+    new_workbook: Annotated[Path, typer.Argument(help="Path to the new workbook")],
 ) -> None:
     """Compare two workbook versions and detect changes.
 
@@ -98,9 +93,7 @@ def compare(
 
 @app.command()
 def package(
-    workbook_path: Path = typer.Argument(
-        ..., help="Path to the workbook to package"
-    ),
+    workbook_path: Annotated[Path, typer.Argument(help="Path to the workbook to package")],
 ) -> None:
     """Package a workbook as a Smart Template.
 
@@ -128,12 +121,8 @@ def package(
 
 @app.command()
 def fill(
-    template_path: Path = typer.Argument(
-        ..., help="Path to the template file"
-    ),
-    data_path: Path = typer.Argument(
-        ..., help="Path to the JSON data file"
-    ),
+    template_path: Annotated[Path, typer.Argument(help="Path to the template file")],
+    data_path: Annotated[Path, typer.Argument(help="Path to the JSON data file")],
 ) -> None:
     """Fill a Smart Template with data from a JSON file.
 
@@ -168,9 +157,7 @@ def fill(
 
 @app.command()
 def validate(
-    template_path: Path = typer.Argument(
-        ..., help="Path to the template to validate"
-    ),
+    template_path: Annotated[Path, typer.Argument(help="Path to the template to validate")],
 ) -> None:
     """Validate a Smart Template.
 
