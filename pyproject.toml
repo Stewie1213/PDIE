@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdie"
+version = "0.1.0"
+description = "ProAssist Document Intelligence Engine - Production-grade document analysis for Excel workbooks"
+requires-python = ">=3.12"
+authors = [{name = "ProAssist"}]
+license = {text = "MIT"}
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "openpyxl>=3.1.0",
+    "pydantic>=2.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "rapidfuzz>=3.0.0",
+    "Jinja2>=3.1.0",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+pdie = "pdie.cli:main"
+
+[tool.setuptools.packages.find]
+where = [".", "pdie"]
+include = ["pdie*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
