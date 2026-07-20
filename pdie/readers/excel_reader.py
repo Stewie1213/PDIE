@@ -1,7 +1,6 @@
 """Reader for Excel workbooks using openpyxl."""
 
 from pathlib import Path
-from typing import Optional
 
 from openpyxl import load_workbook
 from openpyxl.worksheet.worksheet import Worksheet as OpenpyxlWorksheet
@@ -71,7 +70,7 @@ class ExcelReader:
 
         for row in openpyxl_ws.iter_rows():
             for openpyxl_cell in row:
-                if openpyxl_cell.value is not None or openpyxl_cell.formula:
+                if openpyxl_cell.value is not None:
                     cell = ExcelReader._read_cell(openpyxl_cell)
                     worksheet.cells[cell.address] = cell
 

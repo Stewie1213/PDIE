@@ -10,7 +10,7 @@ PDIE provides comprehensive analysis of Excel workbooks including:
 - **Version Comparison**: Detect changes across workbook versions with confidence scoring
 - **Smart Templates**: Package workbooks as reusable templates with metadata
 - **Template Filling**: Populate templates from JSON data while preserving formulas and formatting
-- **HTML Reports**: Interactive visual reports of workbook structure and changes
+- **HTML Reports**: Interactive visual reports of workbook structure and changes with workbook overview, worksheet summaries, highlighted editable/protected/formula/dropdown/merged/hidden cells, and click-to-inspect cell metadata
 
 ## Technology
 
@@ -33,6 +33,7 @@ pip install -e .
 ```bash
 # Analyze a workbook
 pdie analyze workbook.xlsm
+# Writes workbook.html next to the source workbook
 
 # Compare two workbook versions
 pdie compare old.xlsm new.xlsm
