@@ -28,6 +28,31 @@ cd PDIE
 pip install -e .
 ```
 
+### Windows setup.exe installer
+
+PDIE includes an installer build script that produces a Windows installer at
+`dist/installer/setup.exe`. Build it from a Windows machine with Inno Setup 6
+and the installer build dependencies installed:
+
+```powershell
+cd C:\Users\BrianS\PDIE-main
+.\installer\build_setup.bat
+```
+
+Or run the commands manually:
+
+```powershell
+cd C:\Users\BrianS\PDIE-main
+py -m pip install -e ".[installer]"
+py installer\build_setup.py
+```
+
+Do not compile `installer\pdie_setup.iss` directly until
+`dist\pdie\pdie.exe` exists; the Inno Setup file wraps that built executable
+into `setup.exe`. Use `py installer\build_setup.py --skip-installer` to build
+only the standalone `dist/pdie/pdie.exe` CLI executable. If Inno Setup is not on
+`PATH`, pass `--iscc-path C:\path\to\ISCC.exe`.
+
 ## Quick Start
 
 ```bash
