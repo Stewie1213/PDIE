@@ -18,6 +18,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir={#ProjectRoot}\dist\installer
+OutputDir=..\dist\installer
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -28,6 +29,7 @@ ChangesEnvironment=yes
 
 [Files]
 Source: "{#BuiltExe}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\pdie\pdie.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\PDIE Command Prompt"; Filename: "{cmd}"; Parameters: "/K ""cd /d {app} && pdie --help"""; WorkingDir: "{app}"
